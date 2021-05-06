@@ -242,7 +242,7 @@ def main():
 
                 st.markdown('### New tweets:')
                 show_test_dataframe(tweets_frame)
-                st.info('This dataframe might have lesser values than expect due to removal of duplicate tweets')
+                st.info('This dataframe might have lesser values than expected due to removal of duplicate tweets')
 
                 #preprocess the tweets and ask if user wants the corpus to display
                 st.markdown('## Step 3: Preprocessing the tweets for predictions')
