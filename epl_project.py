@@ -15,14 +15,14 @@ from sklearn.feature_extraction.text import CountVectorizer
 from sklearn.linear_model import LogisticRegression
 
 #scrape tweets and return dataframe with new tweets
-def scrape(tag, connection):
+def scrape(tag, connection, number):
     #create dataframe for storing scraped tweets
     test_tweets = pd.DataFrame(columns =['text', 'tags_used'] )
 
     d = date.today()
     d = d.isoformat()
     tweets = tweepy.Cursor(connection.search, q = tag, lang = 'en', until = d,
-    tweet_mode = 'extended').items(10)
+    tweet_mode = 'extended').items(int(number))
     list_tweets = [tweet for tweet in tweets]
     i = 1
     #extract useful information from the tweets
@@ -221,6 +221,11 @@ def main():
         team = team.lower()
         team = re.sub(' ','', team)
 
+        number_of_tweets = st.select_slider('Number of tweets to extract: (default is 10)'
+        , options=[10, 20, 50, 100], value=10)
+        st.info('available values are 10, 20, 50, 100')
+
+
         #
         #START PROCESS OF PREDICTION AFTER PREDICT IS CLICKED
         if st.button('Predict'):
@@ -232,11 +237,12 @@ def main():
                 #connect to api and fetch data
                 st.write('Fetching some fresh tweets..')
                 API = connect_to_twitter()
-                tweets_frame = scrape(team, API)
+                tweets_frame = scrape(team, API, number_of_tweets)
                 st.success('Ready!')
 
                 st.markdown('### New tweets:')
                 show_test_dataframe(tweets_frame)
+                st.info('This dataframe might have lesser values than expect due to removal of duplicate tweets')
 
                 #preprocess the tweets and ask if user wants the corpus to display
                 st.markdown('## Step 3: Preprocessing the tweets for predictions')
